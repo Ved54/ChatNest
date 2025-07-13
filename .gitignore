@@ -1,0 +1,75 @@
+# Node.js
+node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Debug
+*.swp
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage
+*.lcov
+
+# Dependency directories
+jspm_packages
+
+# Optional npm cache directory
+.npm
+
+# dotenv environment variables
+.env
+
+# Local php environment variables
+.env.local.php
+
+# Next.js build artifacts
+.next
+
+# Nuxt.js build artifacts
+.nuxt
+dist
+
+# Nuxt.js generated components
+components/index.tsx
+
+# Storybook build artifacts
+.out
+.storybook-out
+
+# Gatsby files
+.cache/
+public
+
+# Gridsome files
+static
+
+# vuepress build output
+.vuepress/dist
+
+# vue.js
+build
+
+# Serverless directories
+.serverless
+
+# FuseBox cache
+dist
+.fusebox
+
+# TypeScript cache
+*.tsbuildinfo
+
+types
+
