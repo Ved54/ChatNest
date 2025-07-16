@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import { API_BASE_URL } from '../config/api';
 
-const UserSearch = ({ onChatCreate }) => {
+const UserSearch = ({ onChatCreate, onBack }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -89,6 +89,12 @@ const UserSearch = ({ onChatCreate }) => {
   return (
     <div className="user-search">
       <div className="search-header">
+        <div className="search-header-top">
+          <button className="back-button" onClick={onBack} title="Back to Chats">
+            ← Back
+          </button>
+          <h3>New Chat</h3>
+        </div>
         <div className="search-mode-toggle">
           <button
             className={!groupChatMode ? 'active' : ''}

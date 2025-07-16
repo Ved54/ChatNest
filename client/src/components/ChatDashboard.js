@@ -17,6 +17,15 @@ const ChatDashboard = () => {
   const { user, logout } = useAuth();
   const { socket } = useSocket();
 
+  // Function to sort chat rooms by last activity (most recent first)
+  const sortChatRooms = (rooms) => {
+    return rooms.sort((a, b) => {
+      const dateA = new Date(a.lastActivity || a.createdAt);
+      const dateB = new Date(b.lastActivity || b.createdAt);
+      return dateB - dateA;
+    });
+  };
+
   useEffect(() => {
     fetchChatRooms();
   }, []);
@@ -24,18 +33,23 @@ const ChatDashboard = () => {
   useEffect(() => {
     if (socket) {
       socket.on('receiveMessage', (message) => {
-        // Update chat rooms with new message
-        setChatRooms(prev => 
-          prev.map(room => 
+        // Update chat rooms with new message and sort by last activity
+        setChatRooms(prev => {
+          const updatedRooms = prev.map(room => 
             room._id === message.chatRoomId 
               ? { ...room, lastMessage: message, lastActivity: new Date() }
               : room
-          )
-        );
+          );
+          // Sort by last activity (most recent first)
+          return sortChatRooms(updatedRooms);
+        });
       });
 
       socket.on('newChatRoom', (newRoom) => {
-        setChatRooms(prev => [newRoom, ...prev]);
+        setChatRooms(prev => {
+          const updatedRooms = [newRoom, ...prev];
+          return sortChatRooms(updatedRooms);
+        });
       });
 
       return () => {
@@ -69,7 +83,9 @@ const ChatDashboard = () => {
   };
 
   const handleLogout = () => {
-    logout();
+    if (window.confirm('Are you sure you want to logout?')) {
+      logout();
+    }
   };
 
   if (loading) {
@@ -123,7 +139,7 @@ const ChatDashboard = () => {
         </div>
         
         {showUserSearch ? (
-          <UserSearch onChatCreate={handleNewChat} />
+          <UserSearch onChatCreate={handleNewChat} onBack={() => setShowUserSearch(false)} />
         ) : (
           <ChatList
             chatRooms={chatRooms}
@@ -140,11 +156,12 @@ const ChatDashboard = () => {
           <ChatWindow
             chatRoom={selectedChat}
             onChatUpdate={(updatedChat) => {
-              setChatRooms(prev =>
-                prev.map(room =>
+              setChatRooms(prev => {
+                const updatedRooms = prev.map(room =>
                   room._id === updatedChat._id ? updatedChat : room
-                )
-              );
+                );
+                return sortChatRooms(updatedRooms);
+              });
             }}
           />
         ) : (

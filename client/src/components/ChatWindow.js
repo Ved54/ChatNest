@@ -75,6 +75,15 @@ const ChatWindow = ({ chatRoom, onChatUpdate }) => {
       sendMessage(chatRoom._id, response.data);
       setNewMessage('');
       
+      // Update chat's last activity
+      if (onChatUpdate) {
+        onChatUpdate({
+          ...chatRoom,
+          lastMessage: response.data,
+          lastActivity: new Date()
+        });
+      }
+      
       // Stop typing indicator
       if (isTyping) {
         sendTyping(chatRoom._id, false);
@@ -138,10 +147,11 @@ const ChatWindow = ({ chatRoom, onChatUpdate }) => {
     <div className="chat-window">
       <div className="chat-header">
         <h3>{getChatDisplayName()}</h3>
+        &nbsp;
         <div className="chat-info">
           {chatRoom.isGroupChat && (
-            <span className="participant-count">
-              {chatRoom.participants.length} members
+            <span className="participant-count">(
+              {chatRoom.participants.length} members)
             </span>
           )}
         </div>

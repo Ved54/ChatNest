@@ -722,6 +722,43 @@ body {
   background: #c82333;
 }
 
+/* Back button improvements */
+.back-button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+/* Search header improvements */
+.search-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.search-header-top h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .chat-dashboard {
@@ -740,5 +777,11 @@ body {
   .auth-card {
     margin: 20px;
     padding: 30px;
+  }
+  
+  .search-header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }

@@ -136,7 +136,11 @@ const UserProfile = ({ onClose }) => {
               <button onClick={() => setIsEditing(true)}>
                 Edit Profile
               </button>
-              <button onClick={logout} className="logout-button">
+              <button onClick={() => {
+                if (window.confirm('Are you sure you want to logout?')) {
+                  logout();
+                }
+              }} className="logout-button">
                 Logout
               </button>
             </div>
