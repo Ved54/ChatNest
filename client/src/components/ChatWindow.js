@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSocket } from '../contexts/SocketContext';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 
 const ChatWindow = ({ chatRoom, onChatUpdate }) => {
   const [messages, setMessages] = useState([]);
@@ -46,7 +47,7 @@ const ChatWindow = ({ chatRoom, onChatUpdate }) => {
 
   const fetchMessages = async () => {
     try {
-      const response = await axios.get(`http://localhost:5020/api/chatrooms/${chatRoom._id}/messages`);
+      const response = await axios.get(`${API_BASE_URL}/api/chatrooms/${chatRoom._id}/messages`);
       setMessages(response.data);
     } catch (error) {
       console.error('Error fetching messages:', error);
@@ -70,7 +71,7 @@ const ChatWindow = ({ chatRoom, onChatUpdate }) => {
     };
 
     try {
-      const response = await axios.post('http://localhost:5020/api/messages', messageData);
+      const response = await axios.post(`${API_BASE_URL}/api/messages`, messageData);
       sendMessage(chatRoom._id, response.data);
       setNewMessage('');
       

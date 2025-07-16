@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 
 const UserSearch = ({ onChatCreate }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,7 +27,7 @@ const UserSearch = ({ onChatCreate }) => {
   const searchUsers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5020/api/users/search?q=${searchQuery}`);
+      const response = await axios.get(`${API_BASE_URL}/api/users/search?q=${searchQuery}`);
       setSearchResults(response.data.filter(u => u._id !== user._id));
     } catch (error) {
       console.error('Error searching users:', error);
@@ -49,7 +50,7 @@ const UserSearch = ({ onChatCreate }) => {
 
   const createOneOnOneChat = async (otherUser) => {
     try {
-      const response = await axios.post('http://localhost:5020/api/chatrooms', {
+      const response = await axios.post(`${API_BASE_URL}/api/chatrooms`, {
         participants: [user._id, otherUser._id],
         isGroupChat: false
       });
@@ -71,7 +72,7 @@ const UserSearch = ({ onChatCreate }) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5020/api/chatrooms', {
+      const response = await axios.post(`${API_BASE_URL}/api/chatrooms`, {
         name: groupName,
         participants: [user._id, ...selectedUsers.map(u => u._id)],
         isGroupChat: true,

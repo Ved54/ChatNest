@@ -6,6 +6,7 @@ import ChatWindow from './ChatWindow';
 import UserSearch from './UserSearch';
 import UserProfile from './UserProfile';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 
 const ChatDashboard = () => {
   const [selectedChat, setSelectedChat] = useState(null);
@@ -46,7 +47,7 @@ const ChatDashboard = () => {
 
   const fetchChatRooms = async () => {
     try {
-      const response = await axios.get('http://localhost:5020/api/chatrooms');
+      const response = await axios.get(`${API_BASE_URL}/api/chatrooms`);
       setChatRooms(response.data);
     } catch (error) {
       console.error('Error fetching chat rooms:', error);

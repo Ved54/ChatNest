@@ -72,7 +72,13 @@ cd server
 npm install
 ```
 
-Create a `.env` file in the `server` directory with the following variables:
+Create a `.env` file in the `server` directory:
+
+```bash
+cp .env.example .env
+```
+
+Update the `.env` file with the following variables:
 
 ```env
 PORT=5001
@@ -80,6 +86,7 @@ MONGODB_URI=mongodb://localhost:27017/chatnest
 JWT_SECRET=your-super-secret-jwt-key-here
 NODE_ENV=development
 CLIENT_URL=http://localhost:3000
+CORS_ORIGIN=http://localhost:3000
 ```
 
 **Note**: Replace `MONGODB_URI` with your actual MongoDB connection string if using MongoDB Atlas.
@@ -89,6 +96,19 @@ CLIENT_URL=http://localhost:3000
 ```bash
 cd ../client
 npm install
+```
+
+Create a `.env` file in the `client` directory:
+
+```bash
+cp .env.example .env
+```
+
+Update the `.env` file with the following variables:
+
+```env
+REACT_APP_API_URL=http://localhost:5001
+REACT_APP_SOCKET_URL=http://localhost:5001
 ```
 
 ### 4. Database Seeding (Optional)
@@ -214,7 +234,21 @@ MONGODB_URI=mongodb://localhost:27017/chatnest  # MongoDB connection string
 JWT_SECRET=your-jwt-secret-key         # JWT signing secret
 NODE_ENV=development                   # Environment mode
 CLIENT_URL=http://localhost:3000       # Frontend URL for CORS
+CORS_ORIGIN=http://localhost:3000      # CORS origin
 ```
+
+### Client (.env)
+```env
+REACT_APP_API_URL=http://localhost:5001    # Backend API URL
+REACT_APP_SOCKET_URL=http://localhost:5001 # Socket.IO server URL
+```
+
+## Security Improvements
+
+- **Environment Variables**: All API endpoints now use environment variables instead of hardcoded URLs
+- **Centralized Configuration**: API configuration is managed through a single config file
+- **Development vs Production**: Easy switching between development and production environments
+- **Security**: Sensitive URLs are not exposed in the source code
 
 ## Troubleshooting
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 
 const UserProfile = ({ onClose }) => {
   const { user, logout } = useAuth();
@@ -28,7 +29,7 @@ const UserProfile = ({ onClose }) => {
     setSuccess('');
 
     try {
-      const response = await axios.put('http://localhost:5020/api/users/profile', formData);
+      const response = await axios.put(`${API_BASE_URL}/api/users/profile`, formData);
       setSuccess('Profile updated successfully!');
       setIsEditing(false);
       

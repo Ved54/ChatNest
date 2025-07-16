@@ -50,7 +50,6 @@ components/index.tsx
 
 # Gatsby files
 .cache/
-public
 
 # Gridsome files
 static
