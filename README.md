@@ -1,6 +1,6 @@
 # ChatNest - Real-Time Chat Application
 
-A full-stack MERN (MongoDB, Express, React, Node.js) chat application with real-time messaging, user authentication, and both one-on-one and group chat capabilities.
+A fully containerized MERN (MongoDB, Express, React, Node.js) chat application with real-time messaging, user authentication, and both one-on-one and group chat capabilities. Now with Docker support for easy deployment and development.
 
 ## Features
 
@@ -40,23 +40,56 @@ ChatNest/
 │   ├── routes/            # API routes
 │   ├── middleware/        # Authentication middleware
 │   ├── scripts/           # Database seeding scripts
+│   ├── Dockerfile         # Server Docker configuration
 │   └── server.js          # Main server file
 ├── client/                # Frontend React application
 │   ├── src/
 │   │   ├── components/    # React components
 │   │   ├── contexts/      # Context providers
 │   │   └── utils/         # Utility functions
-│   └── public/            # Static assets
+│   ├── public/            # Static assets
+│   └── Dockerfile         # Client Docker configuration
+├── scripts/               # Database initialization
+│   └── mongo-init.js      # MongoDB setup script
+├── docker-compose.yml     # Docker services configuration
+├── .env.docker           # Docker environment variables
 └── README.md
 ```
 
-## Installation & Setup
+## 🐳 Docker Setup (Recommended)
+
+### Quick Start
+
+```bash
+# Clone and setup
+git clone <repository-url>
+cd ChatNest
+
+# Copy environment file and customize passwords
+cp .env.docker.example .env.docker
+# Edit .env.docker with your secure passwords
+
+# Create server environment
+echo 'PORT=5001
+MONGODB_URI=mongodb://admin:password123@mongodb:27017/chatNest?authSource=admin
+JWT_SECRET=your-super-secret-jwt-key-here
+NODE_ENV=development
+CLIENT_URL=http://localhost:3000' > server/.env
+
+# Create client environment
+echo 'REACT_APP_API_URL=http://localhost:5001
+REACT_APP_SOCKET_URL=http://localhost:5001' > client/.env
+
+# Start everything
+docker-compose --env-file .env.docker up -d
+```
+
+Access: http://localhost:3000 | Admin: http://localhost:8081
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
-- MongoDB (local or MongoDB Atlas)
-- npm or yarn
+- Docker
+- Docker Compose
 
 ### 1. Clone the Repository
 
@@ -65,100 +98,125 @@ git clone <repository-url>
 cd ChatNest
 ```
 
-### 2. Backend Setup
+### 2. Environment Setup
+
+Create your Docker environment file from the example:
 
 ```bash
-cd server
-npm install
+# Copy the example file
+cp .env.docker.example .env.docker
 ```
 
-Create a `.env` file in the `server` directory:
+Edit `.env.docker` and update the passwords:
 
-```bash
-cp .env.example .env
+```env
+# MongoDB Configuration
+MONGO_INITDB_ROOT_USERNAME=admin
+MONGO_INITDB_ROOT_PASSWORD=MyS3cur3M0ng0P@ssw0rd!2024
+MONGO_DATABASE=chatNest
+
+# Mongo Express Configuration (Database Admin UI)
+MONGO_EXPRESS_USERNAME=admin
+MONGO_EXPRESS_PASSWORD=Adm1nP@ssw0rd!Secure2024
+
+# Port Configuration
+CLIENT_PORT=3000
+SERVER_PORT=5001
+MONGO_PORT=27017
+MONGO_EXPRESS_PORT=8081
 ```
 
-Update the `.env` file with the following variables:
+**⚠️ Important**: Replace the example passwords with your own secure passwords!
+
+### 3. Create Environment Files
+
+Create `server/.env`:
 
 ```env
 PORT=5001
-MONGODB_URI=mongodb://localhost:27017/chatnest
+MONGODB_URI=mongodb://admin:your-secure-mongo-password@mongodb:27017/chatNest?authSource=admin
 JWT_SECRET=your-super-secret-jwt-key-here
 NODE_ENV=development
 CLIENT_URL=http://localhost:3000
-CORS_ORIGIN=http://localhost:3000
 ```
 
-**Note**: Replace `MONGODB_URI` with your actual MongoDB connection string if using MongoDB Atlas.
-
-### 3. Frontend Setup
-
-```bash
-cd ../client
-npm install
-```
-
-Create a `.env` file in the `client` directory:
-
-```bash
-cp .env.example .env
-```
-
-Update the `.env` file with the following variables:
+Create `client/.env`:
 
 ```env
 REACT_APP_API_URL=http://localhost:5001
 REACT_APP_SOCKET_URL=http://localhost:5001
 ```
 
-### 4. Database Seeding (Optional)
-
-To populate the database with dummy users and chat data:
+### 4. Start the Application
 
 ```bash
-cd server
-npm run seed
+# Start all services
+docker-compose --env-file .env.docker up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop all services
+docker-compose down
 ```
 
-This will create 5 test users with the following credentials:
+### 5. Access the Application
+
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:5001
+- **Mongo Express**: http://localhost:8081 (admin/admin123)
+- **MongoDB**: mongodb://localhost:27017
+
+### 6. Database Seeding (Optional)
+
+Seed the database with test data:
+
+```bash
+# Enter the server container
+docker exec -it chatnest-server-1 npm run seed
+```
+
+Test users created:
 - alice@example.com : 123456
 - bob@example.com : 123456
 - charlie@example.com : 123456
 - diana@example.com : 123456
 - eve@example.com : 123456
 
-## Running the Application
+## 💻 Traditional Setup (Alternative)
 
-### Development Mode
+### Prerequisites
 
-You need to run both the backend and frontend servers:
+- Node.js (v14 or higher)
+- MongoDB (local or MongoDB Atlas)
+- npm or yarn
 
-#### 1. Start the Backend Server
+### Setup Steps
 
-```bash
-cd server
-npm run dev
-```
+1. **Install Dependencies**
+   ```bash
+   # Backend
+   cd server && npm install
+   
+   # Frontend  
+   cd ../client && npm install
+   ```
 
-The server will run on `http://localhost:5001`
+2. **Configure Environment**
+   - Copy `.env.example` to `.env` in both `server/` and `client/` directories
+   - Update MongoDB URI and other settings
 
-#### 2. Start the Frontend Client
-
-```bash
-cd client
-npm start
-```
-
-The client will run on `http://localhost:3000`
-
-### Production Build
-
-To build the client for production:
-
-```bash
-cd client
-npm run build
-```
+3. **Start Services**
+   ```bash
+   # Terminal 1: Start MongoDB (if local)
+   mongod
+   
+   # Terminal 2: Start server
+   cd server && npm run dev
+   
+   # Terminal 3: Start client
+   cd client && npm start
+   ```
 
 ## API Endpoints
 
@@ -250,25 +308,82 @@ REACT_APP_SOCKET_URL=http://localhost:5001 # Socket.IO server URL
 - **Development vs Production**: Easy switching between development and production environments
 - **Security**: Sensitive URLs are not exposed in the source code
 
-## Troubleshooting
+## 🐛 Troubleshooting
 
-### Common Issues
+### Docker Issues
 
-1. **MongoDB Connection Error**
-   - Ensure MongoDB is running locally or check your Atlas connection string
-   - Verify the `MONGODB_URI` in your `.env` file
+1. **Containers won't start**
+   ```bash
+   # Check if ports are already in use
+   docker ps
+   
+   # Stop conflicting containers
+   docker-compose down
+   
+   # Rebuild containers
+   docker-compose --env-file .env.docker up -d --build
+   ```
 
-2. **CORS Issues**
-   - Make sure `CLIENT_URL` in server `.env` matches your frontend URL
-   - Check that the client is making requests to the correct backend URL
+2. **MongoDB connection failed**
+   ```bash
+   # Check MongoDB container logs
+   docker logs mongodb
+   
+   # Restart MongoDB container
+   docker restart mongodb
+   ```
 
-3. **Authentication Issues**
-   - Ensure `JWT_SECRET` is set in the server environment
-   - Check that tokens are being sent in the `Authorization` header
+3. **Environment variables not loaded**
+   - Ensure you're using `--env-file .env.docker` flag
+   - Check that `.env.docker` file exists and has correct values
+   - Restart containers after changing environment variables
 
-4. **Socket.IO Connection Issues**
-   - Verify that both client and server are using the same Socket.IO version
-   - Check that the client is connecting to the correct server URL
+4. **Can't access Mongo Express (port 8081)**
+   - Verify container is running: `docker ps`
+   - Check logs: `docker logs mongo-express`
+   - Try: http://localhost:8081 (login: admin/admin123)
+
+### Application Issues
+
+1. **Frontend can't connect to backend**
+   - Check that both containers are on the same network
+   - Verify `REACT_APP_API_URL` in client `.env`
+   - Check server logs: `docker logs chatnest-server-1`
+
+2. **Database connection issues**
+   - Ensure MongoDB URI includes `authSource=admin`
+   - Check credentials match between `.env.docker` and `server/.env`
+   - Verify network connectivity between containers
+
+3. **Socket.IO not working**
+   - Check browser console for connection errors
+   - Verify both containers are running and accessible
+   - Ensure `REACT_APP_SOCKET_URL` is set correctly
+
+### Useful Commands
+
+```bash
+# View all container logs
+docker-compose logs
+
+# View specific service logs
+docker-compose logs server
+docker-compose logs mongodb
+
+# Access container shell
+docker exec -it chatnest-server-1 /bin/sh
+docker exec -it mongodb mongosh
+
+# Check container status
+docker ps
+
+# Restart specific service
+docker-compose restart server
+
+# Complete cleanup
+docker-compose down -v
+docker system prune -f
+```
 
 ## Contributing
 

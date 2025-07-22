@@ -29,24 +29,34 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Socket.IO setup
 io.on('connection', (socket) => {
-  console.log('User connected: ' + socket.id);
+  if (process.env.NODE_ENV === 'development') {
+    console.log('User connected:', socket.id);
+  }
   
   socket.on('disconnect', () => {
-    console.log('User disconnected: ' + socket.id);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('User disconnected:', socket.id);
+    }
   });
 
   socket.on('joinRoom', ({ chatRoomId }) => {
     socket.join(chatRoomId);
-    console.log(`User ${socket.id} joined room ${chatRoomId}`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`User ${socket.id} joined room ${chatRoomId}`);
+    }
   });
 
   socket.on('leaveRoom', ({ chatRoomId }) => {
     socket.leave(chatRoomId);
-    console.log(`User ${socket.id} left room ${chatRoomId}`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`User ${socket.id} left room ${chatRoomId}`);
+    }
   });
 
   socket.on('sendMessage', ({ chatRoomId, message }) => {
-    console.log(`Message from ${socket.id}: ${message}`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Message from ${socket.id}:`, message.content ? message.content.substring(0, 50) + '...' : 'No content');
+    }
     io.to(chatRoomId).emit('receiveMessage', message);
   });
 });
