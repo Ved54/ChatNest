@@ -8,8 +8,6 @@ A fully containerized MERN (MongoDB, Express, React, Node.js) chat application w
 - **User authentication** with JWT tokens
 - **One-on-one and group chats**
 - **User search** and chat creation
-- **Typing indicators**
-- **Message read receipts**
 - **Clean, responsive UI**
 - **Form validation and error handling**
 - **Loading states** throughout the app
